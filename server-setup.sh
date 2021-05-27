@@ -26,16 +26,16 @@ read -p '     yarn (y/N)' yrn
 if [ $njs == 'y' ]
 then
   echo installing nodeJS...
-  #curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-  #sudo apt-get install -y nodejs && node -v && npm -v
+  curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+  sudo apt-get install -y nodejs && node -v && npm -v
 fi
 
 
 if [ $pmt == 'y' ]
 then
   echo installing pm2...
-  #sudo npm install -g pm2
-  #sudo pm2 startup systemd
+  sudo npm install -g pm2
+  sudo pm2 startup systemd
 fi
 
 
