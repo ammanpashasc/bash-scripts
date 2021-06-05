@@ -5,13 +5,8 @@
 #   - Argument #1: port to monitor (5000,5001, etc)
 #   - Argument #2: path to node (/home/ubuntu/edgeware_node)
 #   - Argument #3: base path for the node (alice, bob)
-# 
-# For eg:
-# ./node-watcher.sh 9933 /home/ubuntu/edgeware-node/ alice
-# ./node-watcher.sh 9934 /home/ubuntu/edgeware-node/ bob
 
 
-# not a very good validation check, buy hey, I wrote this at 5 in the morning ;(
 if [ $# -eq 0 ] 
 then
   echo "Missing or invalid arguments, please see arguments format:" 
@@ -35,7 +30,9 @@ do
   sleep 5
   dt=$(date '+%d/%m/%Y %H:%M:%S');
 
-  response=$(curl --write-out '%{http_code}' --silent --output /dev/null "$url")
+  # make a curl request with 5 sec timeout
+  # max time to restart a node would be 5 secs + the time it takes to restart (around 2-3 secs)
+  response=$(curl --max-time 5 --write-out '%{http_code}' --silent --output /dev/null "$url")
   echo "[$dt] -> Response recieved - $response"
 
   if [ $response -eq 000 ]; then
@@ -46,8 +43,8 @@ do
   #  echo "[$dt] -> $url is alive! :)"
   #else
     echo "[$dt] -> $url is down ;("
-    # find the process id and kill it 
-    lsof -i :$port|tail -n +2|awk '{print $2}'|xargs -r kill
+    # find the process id and kill it forcefully!!
+    lsof -i :$port|tail -n +2|awk '{print $2}'|xargs -r kill -9
     cd $2
 
     echo "[$dt] -> restarring $3 at $1 again..."
